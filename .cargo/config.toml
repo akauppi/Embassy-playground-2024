@@ -1,5 +1,10 @@
+# .cargo/config.toml
+#
 [env]
 DEFMT_LOG="info"
+
+#[build.'cfg(chip = "eps32c6")']
+#target    = "riscv32imac-unknown-none-elfAA"
 
 [build]
 target    = "riscv32imac-unknown-none-elf"
