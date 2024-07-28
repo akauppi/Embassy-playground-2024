@@ -33,22 +33,30 @@ all:
 	@false
 
 build-with-stable:
-	cargo run --release --features=$(CHIP) --target=$(TARGET)
+	cargo build --release --features=$(CHIP) --target=$(TARGET)
 
 build-with-nightly:
-	cargo +nightly-2024-06-01 run --features nightly,$(CHIP) --release --target=$(TARGET)
+	cargo +nightly-2024-06-01 build --features nightly,$(CHIP) --release --target=$(TARGET)
 
-run-with-stable:
-	cargo run --release --bin $(notdir $(_RELEASE_TARGET)) --features $(CHIP) --target $(TARGET)
+# Note: We deliberately don't use 'cargo run' because (a) had a problem with it, (b) it's rather slow in re-checking
+#		all the code, (c) this direct approach gives more explicit feel of what's taking place.
 
-run-with-nightly:
-	cargo +nightly-2024-06-01 run --release --bin $(notdir $(_RELEASE_TARGET)) --features $(CHIP) --target $(TARGET)
+$(_RELEASE_TARGET): src/lib.rs src/bin/*.rs Makefile Cargo.toml .cargo/config.toml
+	@$(MAKE) build-with-stable
+	@test -f $@
+
+run: $(_RELEASE_TARGET)
+	probe-rs run --chip $(CHIP) $(_RELEASE_TARGET)
+
+#run!:
+#	probe-rs run --chip $(CHIP) $(_RELEASE_TARGET)
 
 clean:
-	-rm -rf target/$(TARGET)
+	cargo clean
+		@# cleans *all* targets
 
 echo:
 	@echo $(CHIP) $(TARGET)
 
 #---
-.PHONY: all build-with-stable build-with-nightly run-with-stable run-with-nightly echo
+.PHONY: all build-with-stable build-with-nightly run run! echo
