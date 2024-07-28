@@ -24,29 +24,33 @@ else
   $(error Unknown (or undefined) 'CHIP': "$(CHIP)")
 endif
 
-_BIN:=app
+_APP:=app
+--RELEASE:=--release
 
-_DEBUG_TARGET:=target/$(TARGET)/debug/$(_BIN)
-_RELEASE_TARGET:=target/$(TARGET)/release/$(_BIN)
+ifeq (,$(--RELEASE))
+_APP_BIN:=target/$(TARGET)/debug/$(_APP)
+else
+_APP_BIN:=target/$(TARGET)/release/$(_APP)
+endif
 
 all:
 	@false
 
 build-with-stable:
-	cargo build --release --features=$(CHIP) --target=$(TARGET)
+	cargo build $(--RELEASE) --features=$(CHIP) --target=$(TARGET)
 
 build-with-nightly:
-	cargo +nightly-2024-06-01 build --features nightly,$(CHIP) --release --target=$(TARGET)
+	cargo +nightly-2024-06-01 build --features nightly,$(CHIP) $(--RELEASE) --target=$(TARGET)
 
 # Note: We deliberately don't use 'cargo run' because (a) had a problem with it, (b) it's rather slow in re-checking
 #		all the code, (c) this direct approach gives more explicit feel of what's taking place.
 
-$(_RELEASE_TARGET): src/lib.rs src/bin/*.rs Makefile Cargo.toml .cargo/config.toml
-	@$(MAKE) build-with-stable
+$(_APP_BIN): src/lib.rs src/bin/*.rs Makefile Cargo.toml .cargo/config.toml
+	@$(MAKE) CHIP=$(CHIP) build-with-stable
 	@test -f $@
 
-run: $(_RELEASE_TARGET)
-	probe-rs run --chip $(CHIP) $(_RELEASE_TARGET)
+run: $(_APP_BIN)
+	probe-rs run --chip $(CHIP) $<
 
 #run!:
 #	probe-rs run --chip $(CHIP) $(_RELEASE_TARGET)
@@ -56,7 +60,7 @@ clean:
 		@# cleans *all* targets
 
 echo:
-	@echo $(CHIP) $(TARGET)
+	@echo $(CHIP) $(TARGET) $(--RELEASE)
 
 #---
 .PHONY: all build-with-stable build-with-nightly run run! echo

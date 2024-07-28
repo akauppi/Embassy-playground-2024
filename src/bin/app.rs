@@ -19,7 +19,7 @@ use esp_hal::{
 use static_cell::make_static;
 #[cfg(not(feature = "nightly"))]
 use {
-    static_cell,
+    static_cell::StaticCell,
     esp_hal::timer::ErasedTimer
 };
 
@@ -27,9 +27,9 @@ use {
 // When you are okay with using a nightly compiler it's better to use https://docs.rs/static_cell/2.1.0/static_cell/macro.make_static.html
 macro_rules! mk_static {
     ($t:ty,$val:expr) => {{
-        static STATIC_CELL: static_cell::StaticCell<$t> = static_cell::StaticCell::new();
+        static S: StaticCell<$t> = StaticCell::new();
         #[deny(unused_attributes)]
-        let x = STATIC_CELL.uninit().write(($val));
+        let x = S.init(($val));
         x
     }};
 }
