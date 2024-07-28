@@ -1,5 +1,0 @@
-[toolchain]
-#channel    = "nightly-2024-06-01"
-#channel = "stable"
-#components = ["rust-src"]      # no need; it's the sources for the _std_ library (and we do 'no-std')
-targets    = ["riscv32imac-unknown-none-elf"]

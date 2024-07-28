@@ -3,11 +3,14 @@
 [env]
 DEFMT_LOG="info"
 
-#[build.'cfg(chip = "eps32c6")']
-#target    = "riscv32imac-unknown-none-elfAA"
+# Cannot steer 'target', can we? tbd.
+#
+#[build.'cfg(feature = "eps32c3")']
+#target    = "riscv32imc-unknown-none-elf"
+#[build.'cfg(feature = "eps32c6")']
+#target    = "riscv32imac-unknown-none-elf"
 
 [build]
-target    = "riscv32imac-unknown-none-elf"
 rustflags = [
   "-C", "link-arg=-Tdefmt.x",
   "-C", "link-arg=-Tlinkall.x",

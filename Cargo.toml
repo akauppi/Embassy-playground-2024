@@ -1,42 +1,29 @@
 [package]
-name         = "abc-c6"
+name         = "playground"
 version      = "0.1.0"
 edition      = "2021"
 rust-version = "1.80.0"
-
-# Q: What's the benefit of having these?
-#[[bin]]
-#name = "firmware"
-#path = "src/bin/firmware.rs"
 
 [dependencies]
 defmt            = "0.3.8"
 defmt-rtt        = "0.4.1"
 embassy-executor = { version = "0.5.0",  features = ["defmt"] }
 embassy-time     = { version = "0.3.1",  features = ["generic-queue-8"] }
-esp-backtrace    = { version = "0.13.0", features = ["esp32c6", "defmt", "exception-handler", "panic-handler"] }
-esp-hal          = { version = "0.19.0", features = ["esp32c6", "defmt", "async"] }
-esp-hal-embassy  = { version = "0.2.0",  features = ["esp32c6", "defmt"] }
+esp-backtrace    = { version = "0.13.0", features = ["defmt", "exception-handler", "panic-handler"] }   # "esp32c{36}" centrally
+esp-hal          = { version = "0.19.0", features = ["defmt", "async"] }                                # "esp32c{36}" centrally
+esp-hal-embassy  = { version = "0.2.0",  features = ["defmt"] }                                          # "esp32c{36}" centrally
 static_cell      = { version = "2.1.0",  features = [] }
     # 'make_static!' relies on '#![feature(type_alias_impl_trait)]' (which is nightly-only)
-
-# #[dependencies.feature(nightly)]
-# ^-- doesn't work so
 
 [features]
 nightly = ["static_cell/nightly"]
 default = []
+
+esp32c3 = ["esp-backtrace/esp32c3", "esp-hal/esp32c3", "esp-hal-embassy/esp32c3"]
+esp32c6 = ["esp-backtrace/esp32c6", "esp-hal/esp32c6", "esp-hal-embassy/esp32c6"]
 
 [profile.release]
 debug         = true  # Debug info is useful, and does not affect the size of the final binary
 codegen-units = 1     # LLVM can perform better optimizations using a single thread
 lto           = "fat" # Attempt to perform optimizations across all crates within the dependency graph
 opt-level     = "s"   # Optimize for binary size, but keep loop vectorization enabled
-
-# Did NOT HELP // 27-Jul-24; restricting via 'rust-toolchain.toml'
-#
-#R# Needed for NIGHTLY only (but does not harm stable)
-#R#   See -> https://github.com/ch32-rs/ch32-hal/issues/29
-#R#
-#R[patch.crates-io]
-#Rembassy-executor-macros = { git = 'https://github.com/embassy-rs/embassy' }
