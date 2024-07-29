@@ -58,9 +58,19 @@ async fn main(_spawner: Spawner) {
     esp_hal_embassy::init(&clocks, timers);
     info!("Embassy initialized!");
 
+    /**let delay_ms = {
+        let d = mk_static!(esp_hal::delay::Delay, esp_hal::delay::Delay::new(&clocks));
+        |ms| d.delay_millis(ms)
+    };**/
+
     // Periodically feed the RWDT watchdog timer when our tasks are not running:
     loop {
         rtc.rwdt.feed();
+
+        // Bad for C3:
         Timer::after(Duration::from_secs(1)).await;
+
+        // Didn't help for C3:
+        //delay_ms(10);
     }
 }

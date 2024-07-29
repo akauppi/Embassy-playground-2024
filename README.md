@@ -71,9 +71,9 @@ Caused by:
 
 - reset the devkit by:
 
-	- **pushing both buttons**
-	- **release the RESET button**
-	- **then release the other button**
+	- **pushing both RST and BOOT buttons**
+	- **release the RST button**
+	- **then release BOOT button**
 
 - reconnect the USB/IP connection:
 
@@ -123,7 +123,7 @@ $ usbip list -r 192.168.1.199
 usbip: info: no exportable devices found on 192.168.1.199
 ```
 
-- Reset the board as instructed above (both buttons; release RESET; release other).
+- Reset the board as instructed above (both buttons; release `RST`; release `BOOT`).
 - **RPi:**
 
 	```
