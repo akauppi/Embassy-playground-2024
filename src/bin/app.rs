@@ -2,7 +2,7 @@
 #![no_main]
 #![cfg_attr(feature = "nightly", feature(type_alias_impl_trait))]
 
-use defmt::info;
+use defmt::{info};
 use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
@@ -35,7 +35,7 @@ macro_rules! mk_static {
 }
 
 #[main]
-async fn main(spawner: Spawner) {
+async fn main(_spawner: Spawner) {
     let peripherals = Peripherals::take();
     let system = SystemControl::new(peripherals.SYSTEM);
     let clocks = ClockControl::boot_defaults(system.clock_control).freeze();
@@ -57,9 +57,6 @@ async fn main(spawner: Spawner) {
 
     esp_hal_embassy::init(&clocks, timers);
     info!("Embassy initialized!");
-
-    // TODO: Spawn some tasks
-    let _ = spawner;
 
     // Periodically feed the RWDT watchdog timer when our tasks are not running:
     loop {
