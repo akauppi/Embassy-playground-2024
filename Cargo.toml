@@ -12,7 +12,7 @@ embassy-time     = { version = "0.3.1",  features = ["generic-queue-8"] }
 esp-backtrace    = { version = "0.13.0", features = ["defmt", "exception-handler", "panic-handler"] }   # "esp32c{36}" centrally
 esp-hal          = { version = "0.19.0", features = ["defmt", "async"] }                                # "esp32c{36}" centrally
 esp-hal-embassy  = { version = "0.2.0",  features = ["defmt"] }                                          # "esp32c{36}" centrally
-static_cell      = { version = "2.1.0",  features = [] }
+static_cell      = { version = "2.1.0" }
 
 [features]
 nightly = ["static_cell/nightly"]

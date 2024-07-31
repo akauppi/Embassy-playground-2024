@@ -15,6 +15,25 @@
 
 ## `C3` "difficulties"	
 
+---
+Root cause is likely: 
+
+- [Support for targets without native atomics](https://github.com/knurling-rs/defmt/issues/597) (`defmt` GitHub Issues; opened 2021)
+
+	>*Ideally Rust should expose load/store atomics on riscv32-imc* [source](https://github.com/probe-rs/rtt-target/pull/21#issuecomment-1453858641)
+	
+	- [ ] What is `+forced-atomics` Rust feature?
+
+Related:
+
+- ["How should we expose atomic load/store on targets that don't support full atomics"](https://github.com/rust-lang/rust/issues/99668) (`rust-lang` GitHub; open since Jul'22)	
+
+	In... short:
+	
+	- `riscv32imc` doesn't have "CAS" (compare-and-swap) atomics, but any aligned loads/stores *are* atomic
+
+---
+
 Described in [Issue #1](https://github.com/akauppi/Embassy-playground-2024/issues/1).
 
 - [ ] ["Strange RTT issues on ESP32C3 when using embassy"](https://github.com/probe-rs/probe-rs/issues/1939) (`probe-rs` Github Issue)

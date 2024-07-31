@@ -2,7 +2,7 @@
 #![no_main]
 #![cfg_attr(feature = "nightly", feature(type_alias_impl_trait))]
 
-use defmt::{info};
+use defmt::info;
 use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
@@ -58,16 +58,16 @@ async fn main(_spawner: Spawner) {
     esp_hal_embassy::init(&clocks, timers);
     info!("Embassy initialized!");
 
-    /**let delay_ms = {
+    /*let delay_ms = {
         let d = mk_static!(esp_hal::delay::Delay, esp_hal::delay::Delay::new(&clocks));
         |ms| d.delay_millis(ms)
-    };**/
+    };*/
 
     // Periodically feed the RWDT watchdog timer when our tasks are not running:
     loop {
         rtc.rwdt.feed();
 
-        // Bad for C3:
+        // Bad for C3 (RISC V without 'a'tomics):
         Timer::after(Duration::from_secs(1)).await;
 
         // Didn't help for C3:

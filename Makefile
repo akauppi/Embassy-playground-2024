@@ -21,7 +21,7 @@ ifneq (,$(findstring $(CHIP),esp32c3 ..))
 else ifneq (,$(findstring $(CHIP),esp32c6 ..))
   TARGET:=riscv32imac-unknown-none-elf
 else
-  $(error Unknown (or undefined) 'CHIP': "$(CHIP)")
+  $(error Unknown 'CHIP': "$(CHIP)")
 endif
 
 _APP:=app
@@ -37,7 +37,7 @@ all:
 	@false
 
 build-with-stable:
-	cargo build $(--RELEASE) --features=$(CHIP) --target=$(TARGET)
+	cargo build $(--RELEASE) --bin $(_APP) --features=$(CHIP) --target=$(TARGET)
 
 build-with-nightly:
 	cargo +nightly-2024-06-01 build --features nightly,$(CHIP) $(--RELEASE) --target=$(TARGET)
@@ -50,14 +50,16 @@ $(_APP_BIN): src/lib.rs src/bin/*.rs Makefile Cargo.toml .cargo/config.toml
 	@test -f $@
 
 run: $(_APP_BIN)
+ifeq ($(CHIP),esp32c3)
+	$(warn DEFMT logs are known NOT TO SHOW on ESP32-C3)
+endif
 	probe-rs run --chip $(CHIP) $<
 
-#run!:
-#	probe-rs run --chip $(CHIP) $(_RELEASE_TARGET)
-
-clean:
-	cargo clean
-		@# cleans *all* targets
+run-with-espflash: $(_APP_BIN)
+ifeq ($(CHIP),esp32c3)
+	$(warn DEFMT logs are known NOT TO SHOW on ESP32-C3)
+endif
+	espflash flash --monitor $<
 
 echo:
 	@echo $(CHIP) $(TARGET) $(--RELEASE)

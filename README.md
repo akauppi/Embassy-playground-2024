@@ -1,6 +1,6 @@
 # Embassy Playground 2024
 
-Using [Embassy](https://embassy.dev) on ESP32-C3 and -C6 targets, in 2024.
+Using [Embassy](https://embassy.dev) on ESP32-C3 and C6 targets, in 2024.
 
 ## Background
 
@@ -32,8 +32,8 @@ Follow [ESP32-Mac](https://github.com/lure23/ESP32-Mac) to set up:
 
 <!--
 developed on:
-- macOS 14.5
-- Multipass 1.14.0
+- macOS 14.6
+- Multipass 1.14.0-RC1
 -->
 
 ## Build and run (`stable`)
