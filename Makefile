@@ -18,8 +18,10 @@ CHIP?=esp32c6
 
 ifneq (,$(findstring $(CHIP),esp32c3 ..))
   TARGET:=riscv32imc-unknown-none-elf
+  _FEATURES:=$(CHIP) println
 else ifneq (,$(findstring $(CHIP),esp32c6 ..))
   TARGET:=riscv32imac-unknown-none-elf
+  _FEATURES:=$(CHIP) defmt
 else
   $(error Unknown 'CHIP': "$(CHIP)")
 endif
@@ -33,14 +35,28 @@ else
 _APP_BIN:=target/$(TARGET)/release/$(_APP)
 endif
 
+null  :=
+space := $(null) #
+comma := ,
+
+_FEATURES_CSL := $(subst $(space),$(comma),$(strip $(_FEATURES)))
+	# comma separated
+
 all:
 	@false
 
 build-with-stable:
-	cargo build $(--RELEASE) --bin $(_APP) --features=$(CHIP) --target=$(TARGET)
+	cargo build $(--RELEASE) --bin $(_APP) --features=$(_FEATURES_CSL) --target=$(TARGET)
 
+# Works.
+# Provides some benefits, e.g. 'embassy-executor':
+#	<<
+#		If tasks don't fit in RAM, this is detected at compile time by the linker. Runtime panics due to running out
+#		of memory are not possible.
+#	<<
+#
 build-with-nightly:
-	cargo +nightly-2024-06-01 build --features nightly,$(CHIP) $(--RELEASE) --target=$(TARGET)
+	cargo +nightly-2024-06-01 build $(--RELEASE) --features nightly,$(_FEATURES_CSL) --target=$(TARGET)
 
 # Note: We deliberately don't use 'cargo run' because (a) had a problem with it, (b) it's rather slow in re-checking
 #		all the code, (c) this direct approach gives more explicit feel of what's taking place.
@@ -55,14 +71,11 @@ ifeq ($(CHIP),esp32c3)
 endif
 	probe-rs run --chip $(CHIP) $<
 
-run-with-espflash: $(_APP_BIN)
-ifeq ($(CHIP),esp32c3)
-	$(warn DEFMT logs are known NOT TO SHOW on ESP32-C3)
-endif
-	espflash flash --monitor $<
+#run-with-espflash: $(_APP_BIN)
+#	espflash flash --monitor $<
 
 echo:
-	@echo $(CHIP) $(TARGET) $(--RELEASE)
+	@echo $(CHIP) $(TARGET) $(--RELEASE) $(_FEATURES_CSL)
 
 #---
 .PHONY: all build-with-stable build-with-nightly run run! echo

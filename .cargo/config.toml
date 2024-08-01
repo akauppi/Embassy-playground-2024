@@ -3,7 +3,7 @@
 [env]
 DEFMT_LOG="info"
 
-# Cannot steer 'target'
+# Cannot steer 'target'?
 #
 #[build.'cfg(feature = "eps32c3")']
 #target    = "riscv32imc-unknown-none-elf"
@@ -18,9 +18,16 @@ rustflags = [
   # NOTE: Required to obtain backtraces, however it may negatively impact the performance of your application.
   "-C", "force-frame-pointers",
 ]
-
-#R[target]
-#Rrunner = "probe-rs run --chip xxx"
+  # # TRIES TO FAKE 'a' ON C3, TO GET 'probe-rs run' work with 'defmt'. DID NOT WORK.
+  # # tbd. CONDITIONAL FOR C3!!!
+  # # enable the atomic codegen option for RISCV
+  # "-C", "target-feature=+a",
+  # # tell the core library have atomic load/store even though it's not specified in the target definition
+  # "--cfg", "target_has_atomic_load_store",
+  # "--cfg", 'target_has_atomic_load_store="8"',
+  # "--cfg", 'target_has_atomic_load_store="16"',
+  # "--cfg", 'target_has_atomic_load_store="32"',
+  # "--cfg", 'target_has_atomic_load_store="ptr"',
 
 [unstable]
 build-std = ["core"]

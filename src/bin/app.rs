@@ -2,7 +2,7 @@
 #![no_main]
 #![cfg_attr(feature = "nightly", feature(type_alias_impl_trait))]
 
-use defmt::info;
+use defmt::{debug, info};
 use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
@@ -72,5 +72,7 @@ async fn main(_spawner: Spawner) {
 
         // Didn't help for C3:
         //delay_ms(10);
+
+        debug!("Watchdog fed");
     }
 }

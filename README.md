@@ -58,6 +58,18 @@ $ cargo +nightly-2024-06-01 run --features nightly,esp32c6 --release --target=ri
 Running as above.
 
 
+## Additional
+
+### About "task arena" size
+
+See [`embassy-executor` > Task arena](https://github.com/embassy-rs/embassy/blob/main/embassy-executor/README.md#task-arena) documentation.
+
+TL;DR: 
+
+- `nightly` would be better. No need to provide an intended "task arena size".
+- On stable, one can do that in a couple of ways (but it's presumably optional).
+
+
 ## Troubleshooting
 
 ### USB errors

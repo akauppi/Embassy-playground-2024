@@ -7,19 +7,42 @@ rust-version = "1.80.0"
 [dependencies]
 defmt            = "0.3.8"
 defmt-rtt        = "0.4.1"
-embassy-executor = { version = "0.5.0",  features = ["defmt"] }
-embassy-time     = { version = "0.3.1",  features = ["generic-queue-8"] }
-esp-backtrace    = { version = "0.13.0", features = ["defmt", "exception-handler", "panic-handler"] }   # "esp32c{36}" centrally
-esp-hal          = { version = "0.19.0", features = ["defmt", "async"] }                                # "esp32c{36}" centrally
-esp-hal-embassy  = { version = "0.2.0",  features = ["defmt"] }                                          # "esp32c{36}" centrally
+embassy-executor = { version = "0.5.0" }    # +"defmt"
+embassy-time     = { version = "0.3.1", features = ["generic-queue-8"] }
+esp-backtrace    = { version = "0.13.0", features = ["exception-handler", "panic-handler"] }   # "esp32c{36}" centrally; +"defmt"
+esp-hal          = { version = "0.19.0", features = ["async"] }                                # "esp32c{36}" centrally; +"defmt"
+esp-hal-embassy  = { version = "0.2.0",  features = [] }                                        # "esp32c{36}" centrally; +"defmt"
 static_cell      = { version = "2.1.0" }
+#Rriscv-atomic-emulation-trap = { version = "0.4.1", optional = true }
+
+# 'esp32c' (when not using 'defmt') dependencies:
+esp-println      = { version = "0.10.0", features = ["esp32c3", "log"], optional = true }  # esp32c3 only
+log              = { version = "0.4.20", optional = true }      # esp32c only
 
 [features]
-nightly = ["static_cell/nightly"]
+nightly = ["embassy-executor/nightly", "static_cell/nightly"]
 default = []
 
-esp32c3 = ["esp-backtrace/esp32c3", "esp-hal/esp32c3", "esp-hal-embassy/esp32c3"]
+esp32c3 = ["esp-backtrace/esp32c3", "esp-hal/esp32c3", "esp-hal-embassy/esp32c3",
+    "esp-println?/esp32c3",
+    "embassy-executor/task-arena-size-8192"     # ignored for 'nightly'; see -> https://github.com/embassy-rs/embassy/blob/main/embassy-executor/README.md#task-arena-size
+]
 esp32c6 = ["esp-backtrace/esp32c6", "esp-hal/esp32c6", "esp-hal-embassy/esp32c6"]
+
+# "defmt" works (with 'probe-rs') on ESP32-C6 (native atomics), but NOT on ESP32-C3. See #1.
+defmt = [
+    "embassy-executor/defmt",
+    "esp-backtrace/defmt",
+    "esp-hal/defmt",
+    "esp-hal-embassy/defmt"
+]
+
+# ESP32-C3 cannot be used with 'probe-rs run' (WISH IT COULD!!!)
+println = [
+    "esp-backtrace/println",
+    "esp-hal-embassy/log",
+    "esp-println"
+]
 
 [profile.release]
 debug         = true  # Debug info is useful, and does not affect the size of the final binary

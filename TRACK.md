@@ -24,6 +24,8 @@ Root cause is likely:
 	
 	- [ ] What is `+forced-atomics` Rust feature?
 
+	>*`defmt-rtt` uses `core::sync::atomic` still, making it unusable for people without atomic emulation.*
+
 Related:
 
 - ["How should we expose atomic load/store on targets that don't support full atomics"](https://github.com/rust-lang/rust/issues/99668) (`rust-lang` GitHub; open since Jul'22)	
@@ -31,6 +33,17 @@ Related:
 	In... short:
 	
 	- `riscv32imc` doesn't have "CAS" (compare-and-swap) atomics, but any aligned loads/stores *are* atomic
+
+- ["Atomic polyfill"](https://github.com/knurling-rs/defmt/pull/702) (PR to `defmt`; rejected in 2022)
+
+	- [ ] try that approach as a fork
+
+	>Note that the PR mentions "atomic emulation trap" as being broken (in 2022).
+
+**OH:**
+
+>*We have +forced-atomics support for RISCV in LLVM 16, so we could give adding that to our target specs (and enabling atomic load/store) a try.* [source](https://github.com/rust-lang/rust/issues/99668#issuecomment-1508757127)
+
 
 ---
 
@@ -52,4 +65,20 @@ Described in [Issue #1](https://github.com/akauppi/Embassy-playground-2024/issue
 <!-- whisper
 I don't want to directly link to that outside issue, from this repo (i.e. expose I'm working on this).
 -->
+
+
+### 2nd - slow to erase & flash
+
+```
+probe-rs run --chip esp32c3 target/riscv32imc-unknown-none-elf/release/app
+
+<< TAKES MINUTES HERE >>
+
+      Erasing ✔ [00:00:02] [#####################################################################################################] 192.00 KiB/192.00 KiB @ 90.55 KiB/s (eta 0s )
+  Programming ✔ [00:00:12] [########################################################################################################] 25.54 KiB/25.54 KiB @ 2.11 KiB/s (eta 0s )    Finished in 15.406s
+```
+
+No knowledge what's causing that. No tracking item found.
+
+Not created one, at `defmt`, either. Could ask whether they see `esp32c3` as a target worth persuing (if not, perhaps they should warn against even pulling the dependency (by checking for the `riscv32imc-unknown-none-elf` target?).
 
