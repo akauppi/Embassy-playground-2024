@@ -21,6 +21,13 @@ Follow [ESP32-Mac](https://github.com/lure23/ESP32-Mac) to set up:
 
 - Multipass
 - `rust-emb` VM
+
+   Please update `probe-rs` to an upcoming (> 0.24.0) version. Otherwise, only works on `esp32c6` chips.
+
+	```
+	$ cargo install --git https://github.com/probe-rs/probe-rs --rev 3085cc174dc40cfeccaca23354678097651987f8 --force probe-rs-tools
+	```
+   
 - USB/IP setup 
 
 - one or more of:
@@ -45,6 +52,8 @@ $ cargo build --release --features=esp32c6 --target=riscv32imac-unknown-none-elf
 ```
 $ probe-rs run --chip esp32c6 target/riscv32imac-unknown-none-elf/release/app
 ```
+
+>For `esp32c3`, use `--target=riscv32imc-unknown-none-elf` and `--chip esp32c3`.
 
 
 ### ..with `nightly` (optional)

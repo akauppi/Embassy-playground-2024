@@ -1,5 +1,6 @@
 # Track
 
+<!-- hidden; remove?
 ## Embassy incompatibility with `nightly` >= `2024-06-13`
 
 - [ ] ["Can not build on nightly rust [...]"](https://github.com/ch32-rs/ch32-hal/issues/29)
@@ -11,9 +12,13 @@
 	"Next crates.io release will include the fix."
 	
 	= that would be anything > 0.4.1 [link](https://crates.io/crates/embassy-executor-macros)
-	
+-->	
 
 ## `C3` "difficulties"	
+
+- [ ] Track [this PR](https://github.com/probe-rs/probe-rs/pull/2742/commits/3085cc174dc40cfeccaca23354678097651987f8)
+
+   - [ ] ..and that it gets to `probe-rs` > 0.24.0
 
 ---
 Root cause is likely: 
@@ -67,7 +72,35 @@ I don't want to directly link to that outside issue, from this repo (i.e. expose
 -->
 
 
-### 2nd - slow to erase & flash
+## `esp32c3` - slow to erase & flash
+
+This is likely caused by:
+
+```
+$ ls -al target/riscv32imc-unknown-none-elf/release/app
+
+-rwxrwxr-x   2 ubuntu ubuntu 1108377856 Aug  5 09:33 app
+```
+
+That >1GB binary shouldn't be that big.
+
+This is noticed by some, on Matrix `esp-hal` (4-Aug-24):
+
+```
+what the hell did rustc do there, why is the .elf 1GB?
+```
+
+For comparison, the `esp32c6` binary size is:
+
+```
+-rwxrwxr-x   2 ubuntu ubuntu 1144168 Aug  1 11:02 app
+```
+
+= 1.1MB
+
+
+
+---
 
 ```
 probe-rs run --chip esp32c3 target/riscv32imc-unknown-none-elf/release/app

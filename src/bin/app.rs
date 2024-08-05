@@ -73,6 +73,6 @@ async fn main(_spawner: Spawner) {
         // Didn't help for C3:
         //delay_ms(10);
 
-        debug!("Watchdog fed");
+        info!("Watchdog fed");
     }
 }

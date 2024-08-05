@@ -18,10 +18,10 @@ CHIP?=esp32c6
 
 ifneq (,$(findstring $(CHIP),esp32c3 ..))
   TARGET:=riscv32imc-unknown-none-elf
-  _FEATURES:=$(CHIP) println
+  _DEFMT_OR_PRINTLN:=println
 else ifneq (,$(findstring $(CHIP),esp32c6 ..))
   TARGET:=riscv32imac-unknown-none-elf
-  _FEATURES:=$(CHIP) defmt
+  _DEFMT_OR_PRINTLN:=defmt
 else
   $(error Unknown 'CHIP': "$(CHIP)")
 endif
@@ -39,7 +39,7 @@ null  :=
 space := $(null) #
 comma := ,
 
-_FEATURES_CSL := $(subst $(space),$(comma),$(strip $(_FEATURES)))
+_FEATURES_CSL := $(subst $(space),$(comma),$(strip $(CHIP) $(_DEFMT_OR_PRINTLN)))
 	# comma separated
 
 all:
@@ -56,7 +56,7 @@ build-with-stable:
 #	<<
 #
 build-with-nightly:
-	cargo +nightly-2024-06-01 build $(--RELEASE) --features nightly,$(_FEATURES_CSL) --target=$(TARGET)
+	cargo +nightly-2024-06-01 build $(--RELEASE) --bin $(_APP) --features nightly,$(_FEATURES_CSL) --target=$(TARGET)
 
 # Note: We deliberately don't use 'cargo run' because (a) had a problem with it, (b) it's rather slow in re-checking
 #		all the code, (c) this direct approach gives more explicit feel of what's taking place.
@@ -67,7 +67,7 @@ $(_APP_BIN): src/lib.rs src/bin/*.rs Makefile Cargo.toml .cargo/config.toml
 
 run: $(_APP_BIN)
 ifeq ($(CHIP),esp32c3)
-	$(warn DEFMT logs are known NOT TO SHOW on ESP32-C3)
+	$(warn 'probe-rs run' isn't compatible with $(CHIP))
 endif
 	probe-rs run --chip $(CHIP) $<
 
