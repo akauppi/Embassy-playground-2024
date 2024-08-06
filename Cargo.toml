@@ -20,7 +20,7 @@ esp-println      = { version = "0.10.0", features = ["esp32c3", "defmt-espflash"
 
 [features]
 nightly = ["embassy-executor/nightly", "static_cell/nightly"]
-default = ["defmt"]
+default = []
 
 esp32c3 = ["esp-backtrace/esp32c3", "esp-hal/esp32c3", "esp-hal-embassy/esp32c3",
     "esp-println?/esp32c3",

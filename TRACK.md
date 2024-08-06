@@ -16,7 +16,7 @@
 
 ## `C3` "difficulties"	
 
-- [ ] Track [this PR](https://github.com/probe-rs/probe-rs/pull/2742/commits/3085cc174dc40cfeccaca23354678097651987f8)
+- [ ] Track [""Fix" ESP32-C2 and ESP32-C3"](https://github.com/probe-rs/probe-rs/pull/2748) (probe-rs PR)
 
    - [ ] ..and that it gets to `probe-rs` > 0.24.0
 
@@ -74,8 +74,6 @@ I don't want to directly link to that outside issue, from this repo (i.e. expose
 
 ## `esp32c3` - slow to erase & flash
 
-This is likely caused by:
-
 ```
 $ ls -al target/riscv32imc-unknown-none-elf/release/app
 
@@ -84,7 +82,7 @@ $ ls -al target/riscv32imc-unknown-none-elf/release/app
 
 That >1GB binary shouldn't be that big.
 
-This is noticed by some, on Matrix `esp-hal` (4-Aug-24):
+This is noticed by `danielb`, on Matrix `esp-hal` (4-Aug-24):
 
 ```
 what the hell did rustc do there, why is the .elf 1GB?
@@ -112,6 +110,3 @@ probe-rs run --chip esp32c3 target/riscv32imc-unknown-none-elf/release/app
 ```
 
 No knowledge what's causing that. No tracking item found.
-
-Not created one, at `defmt`, either. Could ask whether they see `esp32c3` as a target worth persuing (if not, perhaps they should warn against even pulling the dependency (by checking for the `riscv32imc-unknown-none-elf` target?).
-

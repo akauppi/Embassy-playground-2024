@@ -18,7 +18,7 @@ CHIP?=esp32c6
 
 ifneq (,$(findstring $(CHIP),esp32c3 ..))
   TARGET:=riscv32imc-unknown-none-elf
-  _DEFMT_OR_PRINTLN:=println
+  _DEFMT_OR_PRINTLN:=defmt
 else ifneq (,$(findstring $(CHIP),esp32c6 ..))
   TARGET:=riscv32imac-unknown-none-elf
   _DEFMT_OR_PRINTLN:=defmt
