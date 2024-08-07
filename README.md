@@ -25,9 +25,14 @@ Follow [ESP32-Mac](https://github.com/lure23/ESP32-Mac) to set up:
    Please update `probe-rs` to an upcoming (> 0.24.0) version. Otherwise, only works on `esp32c6` chips.
 
 	```
-	$ cargo install --git https://github.com/probe-rs/probe-rs --rev a8975c4026fd1b7f3451ba6ffc4f3ed1caafba41 probe-rs-tools --force
+	$ cargo install --git https://github.com/probe-rs/probe-rs probe-rs-tools --force
 	```
 	
+<!--
+	```
+	$ cargo install --git https://github.com/probe-rs/probe-rs --rev a8975c4026fd1b7f3451ba6ffc4f3ed1caafba41 probe-rs-tools --force
+	```
+-->	
 <!--
 	```
 	$ cargo install --git https://github.com/probe-rs/probe-rs --rev 3085cc174dc40cfeccaca23354678097651987f8 --force probe-rs-tools
